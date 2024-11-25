@@ -4,7 +4,12 @@ import "./App.css";
 
 function App() {
   const [users, setUsers] = useState([]);
-  const [newUser, setNewUser] = useState({ id: "", name: "", company: "" });
+  const [newUser, setNewUser] = useState({
+    id: "",
+    name: "",
+    company: "",
+    email: "",
+  });
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
@@ -17,6 +22,11 @@ function App() {
         console.log(err);
       });
   }, []);
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   const handleDelete = (id) => {
     const deletedData = users.filter((ele) => ele.id !== id);
@@ -33,6 +43,10 @@ function App() {
   };
 
   const handleSave = (id, updatedUser) => {
+    if (!validateEmail(updatedUser.email)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
     setUsers((prevUsers) =>
       prevUsers.map((user) =>
         user.id === id
@@ -40,6 +54,7 @@ function App() {
               ...user,
               name: updatedUser.name,
               company: updatedUser.company,
+              email: updatedUser.email,
               isEditing: false,
             }
           : user
@@ -74,7 +89,11 @@ function App() {
   };
 
   const handleAddNewUser = () => {
-    if (newUser.name && newUser.company) {
+    if (!validateEmail(newUser.email)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+    if (newUser.name && newUser.company && newUser.email) {
       const newId =
         newUser.id || (users.length ? users[users.length - 1].id + 1 : 1);
       setUsers([
@@ -83,10 +102,11 @@ function App() {
           id: newId,
           name: newUser.name,
           company: { name: newUser.company },
+          email: newUser.email,
           isEditing: false,
         },
       ]);
-      setNewUser({ id: "", name: "", company: "" });
+      setNewUser({ id: "", name: "", company: "", email: "" });
       setShowForm(false);
     } else {
       alert("Please fill in all fields!");
@@ -111,8 +131,9 @@ function App() {
           backgroundColor: "blue",
           paddingLeft: "25px",
           paddingRight: "25px",
-          marginBottom: "15px",
+          marginBottom: "30px",
           marginLeft: "80%",
+
         }}
         onClick={() => setShowForm(!showForm)}
       >
@@ -142,6 +163,14 @@ function App() {
             value={newUser.company}
             onChange={handleNewUserChange}
             placeholder="Company"
+            required
+          />
+          <input
+            type="email"
+            name="email"
+            value={newUser.email}
+            onChange={handleNewUserChange}
+            placeholder="Email"
             required
           />
           <button
@@ -178,6 +207,13 @@ function App() {
                   onChange={(e) => handleChange(e, user.id)}
                   placeholder="Company"
                 />
+                <input
+                  type="email"
+                  name="email"
+                  value={user.email}
+                  onChange={(e) => handleChange(e, user.id)}
+                  placeholder="Email"
+                />
                 <button
                   onClick={() => handleSave(user.id, user)}
                   className="btn"
@@ -194,6 +230,7 @@ function App() {
               <>
                 <h2>Username: {user.name}</h2>
                 <h3>Company: {user.company.name}</h3>
+                <h3>Email: {user.email}</h3>
                 <button className="btn" onClick={() => handleDelete(user.id)}>
                   Delete
                 </button>

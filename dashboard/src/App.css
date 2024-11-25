@@ -10,7 +10,7 @@
 .user{
   box-sizing: border-box;
   width: 30%;
-  height: 40vh;
+  height: 60vh;
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -1,4 +1,3 @@
-# User-Management-Dashboard
 The User Management App is a React-based web application that allows users to manage a list of users. It supports CRUD operations (Create, Read, Update, Delete), where users can:
 
 View Users: The app fetches and displays user data from an external API (JSONPlaceholder).
